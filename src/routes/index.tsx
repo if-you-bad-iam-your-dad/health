@@ -1,46 +1,47 @@
-import React from 'react';
-import { createBrowserRouter, Navigate } from 'react-router-dom';
-import DashboardLayout from '../components/layout/DashboardLayout';
-import LoginForm from '../components/auth/LoginForm';
-import RegisterForm from '../components/auth/RegisterForm';
-import DoctorDashboard from '../pages/doctor/DoctorDashboard';
-import PatientDashboard from '../pages/patient/PatientDashboard';
-import PatientManagement from '../pages/doctor/PatientManagement';
-import Treatments from '../pages/Treatments';
-import Queries from '../pages/Queries';
-import Settings from '../pages/Settings';
-import { UnauthorizedPage, NotFoundPage } from '../pages/error';
-import ProtectedRoute from '../components/auth/ProtectedRoute';
-import { useAuth } from '../contexts/AuthContext';
+import React from "react";
+import { createBrowserRouter, Navigate } from "react-router-dom";
+import DashboardLayout from "../components/layout/DashboardLayout";
+import LoginForm from "../components/auth/LoginForm";
+import RegisterForm from "../components/auth/RegisterForm";
+import DoctorDashboard from "../pages/doctor/DoctorDashboard";
+import PatientDashboard from "../pages/patient/PatientDashboard";
+import PatientManagement from "../pages/doctor/PatientManagement";
+import AppointmentList from "../pages/doctor/AppointmentList";
+import Treatments from "../pages/Treatments";
+import Queries from "../pages/Queries";
+import Settings from "../pages/Settings";
+import { UnauthorizedPage, NotFoundPage } from "../pages/error";
+import ProtectedRoute from "../components/auth/ProtectedRoute";
+import { useAuth } from "../contexts/AuthContext";
 
 const DashboardComponent = () => {
   const { user } = useAuth();
-  return user?.role === 'admin' ? <DoctorDashboard /> : <PatientDashboard />;
+  return user?.role === "admin" ? <DoctorDashboard /> : <PatientDashboard />;
 };
 
 export const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: <Navigate to="/dashboard" replace />,
   },
   {
-    path: '/login',
+    path: "/login",
     element: <LoginForm />,
   },
   {
-    path: '/register',
+    path: "/register",
     element: <RegisterForm />,
   },
   {
-    path: '/unauthorized',
+    path: "/unauthorized",
     element: <UnauthorizedPage />,
   },
   {
-    path: '*',
+    path: "*",
     element: <NotFoundPage />,
   },
   {
-    path: '/',
+    path: "/",
     element: (
       <ProtectedRoute>
         <DashboardLayout />
@@ -48,12 +49,12 @@ export const router = createBrowserRouter([
     ),
     children: [
       {
-        path: 'dashboard',
+        path: "dashboard",
         element: <DashboardComponent />,
       },
       // Admin/Doctor Routes
       {
-        path: 'patients',
+        path: "patients",
         element: (
           <ProtectedRoute requiredRole="admin">
             <PatientManagement />
@@ -61,15 +62,15 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: 'appointments',
+        path: "appointments",
         element: (
           <ProtectedRoute requiredRole="admin">
-            <DoctorDashboard />
+            <AppointmentList />
           </ProtectedRoute>
         ),
       },
       {
-        path: 'analytics',
+        path: "analytics",
         element: (
           <ProtectedRoute requiredRole="admin">
             <div>Analytics Dashboard</div>
@@ -77,7 +78,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: 'reports',
+        path: "reports",
         element: (
           <ProtectedRoute requiredRole="admin">
             <div>Reports Dashboard</div>
@@ -86,7 +87,7 @@ export const router = createBrowserRouter([
       },
       // Patient Routes
       {
-        path: 'treatments',
+        path: "treatments",
         element: (
           <ProtectedRoute requiredRole="patient">
             <Treatments />
@@ -94,12 +95,12 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: 'queries',
+        path: "queries",
         element: <Queries />,
       },
       // Common Routes
       {
-        path: 'settings',
+        path: "settings",
         element: <Settings />,
       },
     ],

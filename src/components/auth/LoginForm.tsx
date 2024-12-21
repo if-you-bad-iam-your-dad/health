@@ -1,5 +1,5 @@
-import React from 'react';
-import { Mail, Lock, LogIn } from 'lucide-react';
+import React, { useState } from 'react';
+import { Mail, Lock, LogIn, Eye, EyeOff } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLoginForm } from '../../hooks/useLoginForm';
 import Input from '../common/Input';
@@ -9,6 +9,7 @@ import { DOCTOR_CREDENTIALS } from '../../utils/validation/doctorValidation';
 
 export default function LoginForm() {
   const { credentials, errors, isLoading, handleChange, handleSubmit } = useLoginForm();
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <AuthLayout
@@ -31,7 +32,7 @@ export default function LoginForm() {
 
         <Input
           label="Password"
-          type="password"
+          type={showPassword ? "text" : "password"}
           id="password"
           name="password"
           icon={Lock}
@@ -40,6 +41,15 @@ export default function LoginForm() {
           error={errors.password}
           autoComplete="current-password"
           required
+          rightIcon={
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="text-gray-400 hover:text-gray-500"
+            >
+              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </button>
+          }
         />
 
         <div className="flex items-center justify-between">
