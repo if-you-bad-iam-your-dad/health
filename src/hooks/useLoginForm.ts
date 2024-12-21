@@ -1,66 +1,70 @@
-import { useState, useCallback } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import { validateLoginCredentials } from '../utils/validation/loginValidation';
-import { validateDoctorLogin, DOCTOR_CREDENTIALS } from '../utils/validation/doctorValidation';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 
 interface LoginCredentials {
   email: string;
   password: string;
 }
 
-export function useLoginForm() {
+interface LoginErrors {
+  email?: string;
+  password?: string;
+  general?: string;
+}
+
+export const useLoginForm = () => {
+  const navigate = useNavigate();
   const [credentials, setCredentials] = useState<LoginCredentials>({
     email: '',
     password: '',
   });
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<LoginErrors>({});
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { login } = useAuth();
 
-  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setCredentials(prev => ({ ...prev, [name]: value }));
-    // Clear errors when user types
-    setErrors(prev => ({ ...prev, [name]: '' }));
-  }, []);
+    setErrors(prev => ({ ...prev, [name]: '', general: '' }));
+  };
 
-  const handleSubmit = useCallback(async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setErrors({});
 
-    const validation = validateLoginCredentials(credentials.email, credentials.password);
-    
-    if (!validation.isValid) {
-      setErrors(validation.errors);
-      setIsLoading(false);
-      return;
-    }
-
     try {
-      // Check if it's a doctor login
-      const isDoctor = validateDoctorLogin(credentials.email, credentials.password);
+      const response = await queries.auth.login(credentials, {
+        onError: (error: any) => {
+          setErrors({
+            general: error.response?.data?.message || 
+                    error.response?.data?.error ||
+                    error.message ||
+                    'Login failed. Please try again.',
+          });
+        }
+      });
       
-      if (isDoctor) {
-        await login(credentials.email, credentials.password, 'admin');
-        navigate('/dashboard');
-      } else {
-        // Regular patient login
-        await login(credentials.email, credentials.password, 'patient');
-        const from = (location.state as any)?.from?.pathname || '/dashboard';
-        navigate(from);
+      // Update navigation based on user role
+      switch (response.user.role) {
+        case 'doctor':
+          navigate('/doctor/overview');
+          break;
+        case 'patient':
+          navigate('/patient/profile');
+          break;
+        case 'admin':
+          navigate('/admin/dashboard');
+          break;
+        default:
+          navigate('/dashboard');
       }
     } catch (error) {
-      setErrors({
-        email: 'Invalid email or password',
-      });
+      console.error('Login error:', error);
     } finally {
       setIsLoading(false);
     }
-  }, [credentials, login, navigate, location]);
+  };
 
   return {
     credentials,
@@ -69,4 +73,4 @@ export function useLoginForm() {
     handleChange,
     handleSubmit,
   };
-}
+};

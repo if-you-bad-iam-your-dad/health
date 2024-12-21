@@ -2,6 +2,7 @@ import React from 'react';
 import { Loader } from 'lucide-react';
 import { UserCard } from '../../components/users';
 import { useUsers } from '../../hooks';
+import { translations } from '../../utils/translations';
 
 export default function UserList() {
   const { users, loading, error } = useUsers();
@@ -10,6 +11,7 @@ export default function UserList() {
     return (
       <div className="flex items-center justify-center h-64">
         <Loader className="h-8 w-8 animate-spin text-indigo-600" />
+        <span className="ml-2">{translations.hi.loading}</span>
       </div>
     );
   }
@@ -17,7 +19,7 @@ export default function UserList() {
   if (error) {
     return (
       <div className="text-center text-red-600 p-4">
-        {error}
+        {translations.hi.error}
       </div>
     );
   }

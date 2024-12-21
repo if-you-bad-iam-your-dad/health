@@ -8,7 +8,7 @@ import { navigation } from "./sidebar/navigation";
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
-  const { user } = useAuth();
+  const { user } = useAuth(); 
 
   // Filter navigation items based on user role
   const filteredNavigation = navigation.filter(

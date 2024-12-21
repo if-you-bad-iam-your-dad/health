@@ -6,6 +6,7 @@ import Input from '../common/Input';
 import Button from '../common/Button';
 import AuthLayout from './AuthLayout';
 import { DOCTOR_CREDENTIALS } from '../../utils/validation/doctorValidation';
+// import 
 
 export default function LoginForm() {
   const { credentials, errors, isLoading, handleChange, handleSubmit } = useLoginForm();
@@ -17,6 +18,12 @@ export default function LoginForm() {
       subtitle="Sign in to your account to continue"
     >
       <form className="space-y-6" onSubmit={handleSubmit}>
+        {errors.general && (
+          <div className="p-3 text-sm text-red-600 bg-red-50 rounded-md">
+            {errors.general}
+          </div>
+        )}
+
         <Input
           label="Email address"
           type="email"
@@ -28,6 +35,7 @@ export default function LoginForm() {
           error={errors.email}
           autoComplete="email"
           required
+          disabled={isLoading}
         />
 
         <Input
@@ -50,6 +58,7 @@ export default function LoginForm() {
               {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
           }
+          disabled={isLoading}
         />
 
         <div className="flex items-center justify-between">
@@ -80,8 +89,9 @@ export default function LoginForm() {
           isLoading={isLoading}
           icon={<LogIn className="w-4 h-4" />}
           className="w-full"
+          disabled={isLoading}
         >
-          Sign in
+          {isLoading ? 'Signing in...' : 'Sign in'}
         </Button>
 
         <div className="text-center">

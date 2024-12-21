@@ -1,5 +1,5 @@
 import React from 'react';
-import { Loader } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'outline';
@@ -8,7 +8,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   icon?: React.ReactNode;
 }
 
-export default function Button({
+const Button: React.FC<ButtonProps> = ({
   children,
   variant = 'primary',
   size = 'md',
@@ -17,7 +17,7 @@ export default function Button({
   className = '',
   disabled,
   ...props
-}: ButtonProps) {
+}) => {
   const baseStyles = 'inline-flex items-center justify-center font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors duration-200';
   
   const variants = {
@@ -42,7 +42,7 @@ export default function Button({
     >
       {isLoading ? (
         <>
-          <Loader className="w-4 h-4 mr-2 animate-spin" />
+          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
           Loading...
         </>
       ) : (
@@ -53,4 +53,6 @@ export default function Button({
       )}
     </button>
   );
-}
+};
+
+export default Button;

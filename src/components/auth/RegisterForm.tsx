@@ -101,8 +101,8 @@ export default function RegisterForm() {
               <input
                 type="radio"
                 name="role"
-                value="admin"
-                checked={values.role === 'admin'}
+                value="doctor"
+                checked={values.role === 'doctor'}
                 onChange={handleChange}
                 className="form-radio text-indigo-600"
               />
